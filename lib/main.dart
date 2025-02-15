@@ -1,12 +1,9 @@
 import 'package:device_preview/device_preview.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:mechtronz/global/controller/init_controller.dart';
 // import 'package:mechtronz/color_palette_gallery.dart';
-import 'package:mechtronz/screens/select_role/select_role_screen.dart';
 import 'package:mechtronz/screens/splash/splash_screen.dart';
 import 'package:mechtronz/utils/theme.dart';
 

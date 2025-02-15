@@ -8,10 +8,14 @@ import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
 class PhotoPreview extends StatefulWidget {
-  final List<File> images;
+  final List<File>? assetImages;
+  final List<String>? networkImages;
   final int initalIndex;
   const PhotoPreview(
-      {super.key, required this.images, required this.initalIndex});
+      {super.key,
+      this.assetImages,
+      required this.initalIndex,
+      this.networkImages});
 
   @override
   State<PhotoPreview> createState() => _PhotoPreviewState();
@@ -41,19 +45,22 @@ class _PhotoPreviewState extends State<PhotoPreview> {
                 padding: kHPadding,
                 child: Header(
                     title:
-                        'Preview (${currentIndex + 1}/${widget.images.length})')),
+                        'Preview (${currentIndex + 1}/${widget.assetImages?.length ?? widget.networkImages?.length})')),
             Expanded(
               child: PhotoViewGallery.builder(
                 scrollPhysics: const BouncingScrollPhysics(),
                 builder: (BuildContext context, int index) {
                   return PhotoViewGalleryPageOptions(
-                    imageProvider: AssetImage(widget.images[index].path),
+                    imageProvider: widget.assetImages?[index].path == null
+                        ? NetworkImage(widget.networkImages?[index] ?? '')
+                        : AssetImage(widget.assetImages?[index].path ?? ''),
                     initialScale: PhotoViewComputedScale.contained * 0.9,
-                    heroAttributes:
-                        PhotoViewHeroAttributes(tag: widget.images[index].path),
+                    heroAttributes: PhotoViewHeroAttributes(
+                        tag: widget.assetImages?[index].path ?? ''),
                   );
                 },
-                itemCount: widget.images.length,
+                itemCount:
+                    widget.assetImages?.length ?? widget.networkImages?.length,
                 pageController: _pageController,
                 loadingBuilder: (context, event) => Center(
                   child: SizedBox(

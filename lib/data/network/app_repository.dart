@@ -3,7 +3,6 @@ import 'package:mechtronz/constants/api_endpoints.dart';
 import 'package:mechtronz/data/network/dio_client.dart';
 import 'package:mechtronz/modal/api_response.dart';
 import 'package:mechtronz/modal/assets/asset_response.dart';
-import 'package:mechtronz/modal/assets/assets_list_response.dart';
 import 'package:mechtronz/modal/assets/assets_type.dart';
 import 'package:mechtronz/modal/assets/create_assets_request.dart';
 import 'package:mechtronz/modal/assets/create_assets_response.dart';
@@ -15,6 +14,8 @@ import 'package:mechtronz/modal/sign_in_request.dart';
 import 'package:mechtronz/modal/sign_in_response.dart';
 import 'package:mechtronz/modal/sign_up_request.dart';
 import 'package:mechtronz/modal/sign_up_response.dart';
+import 'package:mechtronz/modal/ticket/ticket_request.dart';
+import 'package:mechtronz/modal/ticket/ticket_response.dart';
 import 'package:mechtronz/modal/user_response.dart';
 import 'package:mechtronz/modal/validate_otp_request.dart';
 
@@ -169,6 +170,30 @@ class AppRepository {
         queryParameters: IdRequest(id: id).toJson(),
       )),
       (data) => AssetType.fromJson(data),
+    );
+  }
+
+  Future<CreateAssetsResponse> getAsset(int id) async {
+    return CreateAssetsResponse.fromJson(
+      (await dioClient!.get(
+        ApiEndpoints.getAssetById,
+        options: option,
+        queryParameters: IdRequest(id: id).toJson(),
+      )),
+      (data) => CreateAssetsResult.fromJson(data),
+    );
+  }
+
+  /* ------------------------Ticket---------------------------------- */
+
+  Future<TicketResponse> createTicket(TicketRequest ticketRequest) async {
+    return TicketResponse.fromJson(
+      (await dioClient!.post(
+        ApiEndpoints.createTicket,
+        options: option,
+        data: FormData.fromMap(ticketRequest.toJson()),
+      )),
+      (data) => TicketResult.fromJson(data),
     );
   }
 }

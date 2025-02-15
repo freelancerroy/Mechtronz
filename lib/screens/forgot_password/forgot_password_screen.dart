@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mechtronz/constants/app_colors.dart';
 import 'package:mechtronz/constants/tags.dart';
-import 'package:mechtronz/screens/otp_enter/otp_enter_screen.dart';
-import 'package:mechtronz/utils/helper.dart';
 import 'package:mechtronz/utils/text_preset.dart';
 import 'package:mechtronz/global/widgets/button.dart';
 import 'package:mechtronz/global/widgets/custom_text_button.dart';

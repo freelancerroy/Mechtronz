@@ -87,19 +87,21 @@ class _CreateAssetsScreenState extends State<CreateAssetsScreen> {
   }
 
   Future<void> _submitForm() async {
-    if (image == null) {
+    if (image == null && networkImage == null) {
       imageErrorText = 'Please select an image';
     } else {
       imageErrorText = null;
     }
     setState(() {});
-    if (_formKey.currentState!.validate() && image != null) {
+    if (_formKey.currentState!.validate() && imageErrorText == null) {
       if (widget.asset != null) {
         Get.find<AssetController>().updateAsset(
           CreateAssetsRequest(
             assetName: _assetNameController.text,
-            // assetImagePath: await dio.MultipartFile.fromFile(image!.path,
-            //     filename: image!.path.split('/').last),
+            assetImagePath: image == null
+                ? null
+                : await dio.MultipartFile.fromFile(image!.path,
+                    filename: image!.path.split('/').last),
             assetTypeId: assetsType?.id,
             brandName: _brandNameController.text,
             machineType: _machineTypeController.text,

@@ -1,24 +1,28 @@
-import 'dart:io';
-
 import 'package:easy_stepper/easy_stepper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:mechtronz/constants/api_endpoints.dart';
 import 'package:mechtronz/constants/app_colors.dart';
 import 'package:mechtronz/constants/constants.dart';
+import 'package:mechtronz/global/shimmer/text_shimmer.dart';
 import 'package:mechtronz/global/widgets/h_gap.dart';
 import 'package:mechtronz/global/widgets/header.dart';
 import 'package:mechtronz/global/widgets/photo_preview.dart';
 import 'package:mechtronz/global/widgets/screen.dart';
+import 'package:mechtronz/global/widgets/square_internet_image.dart';
 import 'package:mechtronz/global/widgets/tochable_opacity.dart';
 import 'package:mechtronz/global/widgets/v_gap.dart';
+import 'package:mechtronz/modal/ticket/ticket_response.dart';
+import 'package:mechtronz/screens/assets/controller/asset_controller.dart';
 import 'package:mechtronz/screens/tickets/widgets/ticket_tile.dart';
+import 'package:mechtronz/utils/helper.dart';
 import 'package:mechtronz/utils/text_preset.dart';
 
 class TicketDetailsScreen extends StatefulWidget {
-  final List<File> images;
-  const TicketDetailsScreen({super.key, required this.images});
+  final TicketResult? ticketResult;
+  const TicketDetailsScreen({super.key, required this.ticketResult});
 
   @override
   State<TicketDetailsScreen> createState() => _TicketDetailsScreenState();
@@ -26,6 +30,16 @@ class TicketDetailsScreen extends StatefulWidget {
 
 class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
   int activeStep = 0;
+  TicketResult? ticketResult;
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      ticketResult = widget.ticketResult;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Screen(
@@ -91,60 +105,74 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
                                   bottomLeft: Radius.circular(0.w),
                                 ),
                               ),
-                              child: Text('TICKET-1050', style: kSubtitle3),
+                              child: Text('TICKET-${ticketResult?.id ?? ''}',
+                                  style: kSubtitle3),
                             ),
                           ],
                         ),
                         const VGap(),
-                        Text(
-                          'Daikin 1.5 Ton 3 Star Split Inverter AC',
-                          style: kHeadline3,
+                        FutureBuilder(
+                          future: AssetController()
+                              .getAsset(ticketResult?.assetId ?? 0),
+                          builder: (context, assetController) =>
+                              assetController.data == null
+                                  ? const TextShimmer()
+                                  : Text(
+                                      assetController.data?.assetName ?? '',
+                                      style: kHeadline3,
+                                    ),
                         ),
                         const VGap(),
-                        const TicketTile(
+                        TicketTile(
                           title: 'Asset ID:',
-                          value: 'A55222442665',
+                          value: ticketResult?.assetId?.toString() ?? '',
                           icon: Icons.tv,
                         ),
                         const VGap(),
-                        const TicketTile(
+                        TicketTile(
                           title: 'Created At:',
-                          value: '12/12/2021',
+                          value: Helper.getFormattedDateFromString(
+                                  ticketResult?.creationTime ?? '') ??
+                              '__/__/____',
                           icon: CupertinoIcons.calendar_today,
                         ),
                         const VGap(),
-                        const TicketTile(
+                        TicketTile(
                           title: 'Assigned To:',
-                          value: 'John Doe (EMP-5592)',
+                          value: ticketResult?.customerId?.toString() ?? '',
                           icon: CupertinoIcons.person_fill,
                         ),
                         const VGap(),
-                        const TicketTile(
+                        TicketTile(
                           title: 'Closed At:',
-                          value: '__/__/____',
+                          value: Helper.getFormattedDateFromString(
+                                  ticketResult?.closedAt ?? '') ??
+                              '__/__/____',
                           icon: CupertinoIcons.calendar,
                         ),
                         const VGap(),
-                        const TicketTile(
+                        TicketTile(
                           title: 'Contact Number:',
-                          value: '9876543210',
+                          value:
+                              ticketResult?.customerContactPersonNumber ?? '',
                           icon: CupertinoIcons.phone_fill,
                         ),
                         const VGap(),
-                        const TicketTile(
+                        TicketTile(
                           title: 'Customer Review:',
-                          value: '',
+                          value: ticketResult?.customerReview ?? '',
                           icon: Icons.reviews,
                         ),
                         const VGap(),
-                        const TicketTile(
+                        TicketTile(
                           title: 'Rating:',
-                          value: '',
+                          value: ticketResult?.rating?.toString() ?? '',
                           icon: CupertinoIcons.star_lefthalf_fill,
                         ),
                         TicketTile(
                           title: 'Status:',
                           icon: Icons.moving,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           child: Card(
                             child: Container(
                               padding: EdgeInsets.symmetric(
@@ -154,7 +182,7 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
                                 borderRadius: kBorderRadius,
                               ),
                               child: Text(
-                                'Open',
+                                ticketResult?.ticketStatus ?? '',
                                 style:
                                     kSubtitle2.copyWith(color: AppColors.white),
                               ),
@@ -234,7 +262,7 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
                   style: kHeadline3,
                 ),
                 Text(
-                  "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                  ticketResult?.description ?? '',
                   style: kBody,
                 ),
                 const VGap(),
@@ -246,29 +274,32 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
                 Wrap(
                   spacing: 10.w,
                   runSpacing: 10.w,
-                  children: widget.images
+                  children: (ticketResult?.ticketImages ?? [])
                       .map(
                         (e) => TouchableOpacity(
                           onTap: () {
                             Get.bottomSheet(
                               PhotoPreview(
-                                images: widget.images,
-                                initalIndex: widget.images.indexOf(e),
+                                networkImages: ticketResult?.ticketImages
+                                        ?.map((e) => ApiEndpoints.url(e))
+                                        .toList() ??
+                                    [],
+                                initalIndex:
+                                    ticketResult?.ticketImages?.indexOf(e) ?? 0,
                               ),
                               isScrollControlled: true,
                               ignoreSafeArea: false,
                             );
                           },
-                          child: Image.file(
-                            e,
-                            width: 150.w,
-                            height: 150.w,
-                            fit: BoxFit.cover,
+                          child: SquareInternetImage(
+                            imgURL: e,
+                            size: 150.w,
                           ),
                         ),
                       )
                       .toList(),
                 ),
+                VGap(gap: 50.h)
               ],
             ),
           ),

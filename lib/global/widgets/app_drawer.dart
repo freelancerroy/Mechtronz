@@ -14,7 +14,7 @@ import 'package:mechtronz/utils/text_preset.dart';
 import 'package:mechtronz/global/widgets/h_gap.dart';
 import 'package:mechtronz/global/widgets/v_gap.dart';
 
-enum ActiveScreenEnum { home, profile, assets }
+enum ActiveScreenEnum { home, profile, assets, aboutUs }
 
 class AppDrawer extends Drawer {
   final GlobalKey<ScaffoldState> scaffoldKey;
@@ -223,7 +223,7 @@ class AppDrawer extends Drawer {
                                     ),
                                     DrawerItem(
                                         isSelected: activeScreen ==
-                                            ActiveScreenEnum.assets,
+                                            ActiveScreenEnum.aboutUs,
                                         title: 'About Us',
                                         selectedIcon: Icons.info,
                                         unselectedIcon:

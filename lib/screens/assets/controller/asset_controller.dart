@@ -6,6 +6,7 @@ import 'package:mechtronz/global/widgets/error_dialog.dart';
 import 'package:mechtronz/modal/assets/asset_response.dart';
 import 'package:mechtronz/modal/assets/assets_type.dart';
 import 'package:mechtronz/modal/assets/create_assets_request.dart';
+import 'package:mechtronz/modal/assets/create_assets_response.dart';
 import 'package:mechtronz/modal/id_request.dart';
 
 class AssetController extends GetxController {
@@ -167,6 +168,22 @@ class AssetController extends GetxController {
   Future<AssetType?> getAssetsType(int id) async {
     try {
       final res = await AppRepository().getAssetsType(id);
+      if (res.success == true && res.result != null) {
+        return res.result;
+      } else {
+        final error = handleError(res.error);
+        await errorDialog(error);
+      }
+    } catch (e) {
+      final error = handleError(e);
+      await errorDialog(error);
+    }
+    return null;
+  }
+
+  Future<CreateAssetsResult?> getAsset(int id) async {
+    try {
+      final res = await AppRepository().getAsset(id);
       if (res.success == true && res.result != null) {
         return res.result;
       } else {

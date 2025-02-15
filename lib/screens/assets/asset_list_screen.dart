@@ -56,7 +56,7 @@ class _AssetListScreenState extends State<AssetListScreen> {
                 FloatingActionButtonLocation.centerFloat,
             drawer: AppDrawer(
               scaffoldKey: key,
-              activeScreen: ActiveScreenEnum.profile,
+              activeScreen: ActiveScreenEnum.assets,
             ),
             child: controller.isListLoading && controller.assetList.isEmpty
                 ? const Center(child: CircularProgressIndicator())

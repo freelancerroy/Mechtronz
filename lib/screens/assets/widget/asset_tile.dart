@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:mechtronz/constants/api_endpoints.dart';
 import 'package:mechtronz/constants/app_colors.dart';
 import 'package:mechtronz/constants/constants.dart';
 import 'package:mechtronz/global/widgets/h_gap.dart';
+import 'package:mechtronz/global/widgets/square_internet_image.dart';
 import 'package:mechtronz/global/widgets/tochable_opacity.dart';
 import 'package:mechtronz/global/widgets/v_gap.dart';
 import 'package:mechtronz/modal/assets/asset_response.dart';
@@ -111,8 +110,6 @@ class _AssetTileState extends State<AssetTile> {
                                   Text(
                                     widget.asset.assetName ?? '',
                                     style: kHeadline3,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
                                   ),
                                   RichText(
                                       text: TextSpan(
@@ -278,43 +275,6 @@ class _AssetTileState extends State<AssetTile> {
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class SquareInternetImage extends StatelessWidget {
-  const SquareInternetImage({
-    super.key,
-    required this.imgURL,
-    this.size,
-  });
-
-  final String? imgURL;
-  final double? size;
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: kBorderRadius,
-      child: Image.network(
-        ApiEndpoints.url(imgURL ?? ''),
-        errorBuilder: (context, error, stackTrace) => Container(
-          decoration: BoxDecoration(
-            color: AppColors.gray100,
-            borderRadius: kBorderRadius,
-          ),
-          width: size,
-          height: size,
-          child: Icon(
-            Icons.image_not_supported,
-            color: AppColors.gray400,
-            size: size != null ? (size! / 2).clamp(0, 40.w) : 40.w,
-          ),
-        ),
-        width: size,
-        height: size,
-        fit: BoxFit.cover,
       ),
     );
   }
